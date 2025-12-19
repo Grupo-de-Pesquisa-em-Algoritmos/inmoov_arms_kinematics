@@ -6,8 +6,7 @@ import numpy as np
 import spatialmath as sp
 import random
 
-
-# construcao do braco esquerdo com base nos parametros de DH do inmoov
+# creation of the left arm based on inmoov's DH parameters
 left_arm = rtb.DHRobot(
     [
         rtb.RevoluteDH(alpha=(np.pi)/2, offset=-(np.pi)/2),
@@ -18,17 +17,19 @@ left_arm = rtb.DHRobot(
     ],
     name="LeftArm"
 )
-# ajuste da posicao da base (fixa)
+
+# (fixed) base's position adjustment (fixed)
 left_arm.base = sp.SE3(0.2, 0, 0) * sp.SE3.Rx(np.pi/2)
 
 b = left_arm.base.t
 
-# gerar um conjunto de angulos aleatorios entre -90º e 90º para as cinco juntas!
+# generating a random angles vector between -90º and 90º for the five joints
 angles = [random.uniform(-np.pi/2, np.pi/2) for _ in range(5)]
+# angles = [0, np.pi/2, np.pi/4, 0, 0]
 print(angles)
 forward = left_arm.fkine(angles)
-print("forwardk = ", forward)
-# Y = sp.SE3(0.3, 0.2, -0.1)
+print("forwardk = \n", forward)
+Y = sp.SE3(0.3, 0.2, -0.1)
 T = left_arm.ikine_LM(forward)
 print(T)
 left_arm.plot(T.q, backend='pyplot', block=False)

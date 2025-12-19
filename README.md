@@ -1,6 +1,6 @@
-To be able to run the codes in this repository, initiate your virtual environment and install the required dependencies with the requirements file, such as follows:
+To be able to run the codes in this repository, create your virtual environment and install the required dependencies with the requirements file, such as follows:
 
-1. Initiate the virtual environment
+1. Initialize the virtual environment
 ```bash
 python -m venv venv
 ```
