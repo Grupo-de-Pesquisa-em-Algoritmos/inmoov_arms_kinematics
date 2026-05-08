@@ -7,13 +7,26 @@ import spatialmath as sp
 import random
 
 # creation of the left arm based on inmoov's DH parameters
+# left_arm = rtb.DHRobot(
+#     [
+#         rtb.RevoluteDH(alpha=(np.pi)/2, offset=-(np.pi)/2),
+#         rtb.RevoluteDH(alpha=np.pi/2, d=-0.18, offset=np.pi/2),
+#         rtb.RevoluteDH(d=0.286, alpha=-(np.pi)/2, offset=-(np.pi)/2),
+#         rtb.RevoluteDH(d=0.0135, a=0.0127, alpha=np.pi/2),
+#         rtb.RevoluteDH(d=0.28)
+#     ],
+#     name="LeftArm"
+# )
+
+# the version below is the one contained in Kenshimov's article
 left_arm = rtb.DHRobot(
     [
-        rtb.RevoluteDH(alpha=(np.pi)/2, offset=-(np.pi)/2),
-        rtb.RevoluteDH(d=-0.18, alpha=np.pi/2, offset=np.pi/2),
-        rtb.RevoluteDH(d=0.286, alpha=-(np.pi)/2, offset=-(np.pi)/2),
-        rtb.RevoluteDH(d=0.0135, a=0.0127, alpha=np.pi/2),
-        rtb.RevoluteDH(d=0.28)
+        rtb.RevoluteDH(alpha=(np.pi)/2,  a=0.2,    d=0,     offset=0),
+        rtb.RevoluteDH(alpha=-(np.pi)/2, a=0.05,   d=0,      offset=-(np.pi)/2),
+        rtb.RevoluteDH(alpha=(np.pi)/2,  a=0,      d=-0.18,  offset=(np.pi)/2),
+        rtb.RevoluteDH(alpha=-(np.pi)/2, a=0,      d=0.286,  offset=-(np.pi)/2),
+        rtb.RevoluteDH(alpha=(np.pi)/2,  a=0.0127, d=0.0135, offset=0),
+        rtb.RevoluteDH(alpha=0,          a=0,      d=0.28,   offset=0)
     ],
     name="LeftArm"
 )
@@ -24,7 +37,7 @@ left_arm.base = sp.SE3(0.2, 0, 0) * sp.SE3.Rx(np.pi/2)
 b = left_arm.base.t
 
 # generating a random angles vector between -90º and 90º for the five joints
-angles = [random.uniform(-np.pi/2, np.pi/2) for _ in range(5)]
+angles = [random.uniform(-np.pi/2, np.pi/2) for _ in range(6)]
 # angles = [0, np.pi/2, np.pi/4, 0, 0]
 print(angles)
 forward = left_arm.fkine(angles)
@@ -32,7 +45,7 @@ print("forwardk = \n", forward)
 Y = sp.SE3(0.3, 0.2, -0.1)
 T = left_arm.ikine_LM(forward)
 print(T)
-left_arm.plot(T.q, backend='pyplot', block=False)
+left_arm.plot(T.q, block=False)
 ax = plt.gca()
 ax.scatter(b[0], b[1], b[2], s=100, c='red', label='base')
 ax.scatter(forward.t[0], forward.t[1], forward.t[2], s=80, c='blue', label='goal')
