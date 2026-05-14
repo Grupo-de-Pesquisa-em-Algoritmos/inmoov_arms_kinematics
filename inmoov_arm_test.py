@@ -42,6 +42,8 @@ arm = rtb.DHRobot(
     ]
 )
 
+print(len(arm.links))
+
 angles_alt = [0, 0, 0, 0]
 arm.base = sp.SE3(0.2, 0, 0) * sp.SE3.Rx(np.pi/2)
 angles = np.array([[0, 0, 0, 0, 0, 0], [0, 0, np.pi/4, 0, 0, 0], [0, 0, np.pi/2, 0, 0, 0]])
