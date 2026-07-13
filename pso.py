@@ -19,4 +19,4 @@ class PSO:
 
     def initParticles(self):
         for i in range(self.n_part):
-            
+            pass

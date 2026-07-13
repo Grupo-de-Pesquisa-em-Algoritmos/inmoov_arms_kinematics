@@ -5,3 +5,4 @@ roboticstoolbox-python
 spatialmath-python
 sympy
 pyqt5
+pymoo
