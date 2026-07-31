@@ -6,6 +6,8 @@ import numpy as np
 import spatialmath as sp
 import random
 
+env = rtb.backends.PyPlot.PyPlot()
+env.launch()
 # creation of the left arm based on inmoov's DH parameters
 left_arm_dh = rtb.DHRobot(
     [
@@ -19,16 +21,28 @@ left_arm_dh = rtb.DHRobot(
 )
 
 
-# dh parameters presented in syed et al article (2024)
+# dh parameters presented in syed et al article (2024) ----> currently preferred
 left_arm_charmie = rtb.DHRobot(
     [
-        rtb.RevoluteDH(alpha=-(np.pi)/2,  a=11.783,    d=0,     offset=0, flip=False),
-        rtb.RevoluteDH(alpha=-(np.pi)/2, a=0,   d=66.104,      offset=-(np.pi)/2),
-        rtb.RevoluteDH(alpha=-(np.pi)/2,  a=0,      d=224.60,  offset=-(np.pi)/2),
-        rtb.RevoluteDH(alpha=(np.pi)/2, a=0,      d=0,  offset=0.464),
-        rtb.RevoluteDH(alpha=0,  a=0, d=370, offset=0),
+        rtb.RevoluteDH(alpha=-(np.pi)/2,  a=0.011783, d=0,             offset=0),
+        rtb.RevoluteDH(alpha=-(np.pi)/2,  a=0,        d=0.066104,      offset=-(np.pi)/2),
+        rtb.RevoluteDH(alpha=-(np.pi)/2,  a=0,        d=0.22460,       offset=-(np.pi)/2),
+        rtb.RevoluteDH(alpha=(np.pi)/2,   a=0,        d=0,             offset=0.464),
+        rtb.RevoluteDH(alpha=0,           a=0,        d=0.370,         offset=0),
     ],
     name="LeftArm"
+)
+
+
+right_arm = rtb.DHRobot(
+    [
+        rtb.RevoluteDH(alpha=-(np.pi)/2,  a=0.011783, d=0,             offset=0),
+        rtb.RevoluteDH(alpha=(np.pi)/2,  a=0,        d=-0.066104,      offset=(np.pi)/2),
+        rtb.RevoluteDH(alpha=(np.pi)/2,  a=0,        d=0.22460,       offset=(np.pi)/2),
+        rtb.RevoluteDH(alpha=-(np.pi)/2,   a=0,        d=0,             offset=-0.464),
+        rtb.RevoluteDH(alpha=0,           a=0,        d=0.370,         offset=0),
+    ],
+    name="RightArmInMoov"
 )
 
 # the version below is the one presented on Kenshimov's article
@@ -38,8 +52,7 @@ left_arm = rtb.DHRobot(
         rtb.RevoluteDH(alpha=-(np.pi)/2, a=0.05,   d=0,      offset=-(np.pi)/2),
         rtb.RevoluteDH(alpha=(np.pi)/2,  a=0,      d=-0.18,  offset=(np.pi)/2),
         rtb.RevoluteDH(alpha=-(np.pi)/2, a=0,      d=0.286,  offset=-(np.pi)/2),
-        rtb.RevoluteDH(alpha=(np.pi)/2,  a=0.0127, d=0.0135, offset=0),
-        rtb.RevoluteDH(alpha=0,          a=0,      d=0.28,   offset=0)
+        rtb.RevoluteDH(alpha=(np.pi)/2,  a=0.0127, d=0.0135, offset=0)
     ],
     name="LeftArm"
 )
@@ -58,11 +71,44 @@ arm = rtb.DHRobot(
 
 angles = np.array([[0, 0, 0, 0, 0], [0, -np.pi/8, 0, 0, 0], [0, -np.pi/4, 0, 0, 0]])
 angle = [0, np.pi/4, 0, 0, 0]
+            # ad/ab, rot-omb, rot-bra, bic, pulso
+#rest_angle = [(17*np.pi)/36, np.pi/2, 0, np.pi, 0]
+zero_angle = [0, np.pi/2, np.pi/2, 0, np.pi/2]
+
+# trajectory test angles ----------------------------------
+angles1 = [0, 0, 0, 0, 0]
+angles2r = [np.pi/4, 0, 0, 0, 0]
+angles2l = [-np.pi/4, 0, 0, 0, 0]
+# ---------------------------------------------------------
+
+
+test_angles = [0, -(np.pi)/4, -(np.pi)/2, 0.464, 0]
+#test_angles1 = [0, 0.464, -(np.pi)/2, -(np.pi)/2, 0]
 # (fixed) base's position adjustment (fixed)
 # left_arm.base = sp.SE3(0.2, 0, 0) * sp.SE3.Rx(np.pi/2)
 
 b = left_arm_charmie.base.t
 
+#right_arm.base = sp.SE3(0, 0.4, 0)
+env.add(right_arm)
+#env.add(left_arm_charmie)
+
+qtr = rtb.jtraj(angles1, angles2r, 50)
+qtl = rtb.jtraj(angles1, angles2l, 50)
+
+for q_r, q_l in zip(qtr.q, qtl.q):
+    #left_arm_charmie.q = q_l
+    right_arm.q = q_r
+    env.step()
+
+env.hold()
+
+forward = right_arm.fkine(test_angles)
+print(forward)
+forward = left_arm_charmie.fkine(test_angles)
+print(forward)
+plt.show(block=True)
+"""
 # generating a random angles vector between -90º and 90º for the five joints
 angles_fk = [random.uniform(-np.pi/2, np.pi/2) for _ in range(5)]
 # getting the fk for the random configuration 
@@ -81,3 +127,4 @@ ax.scatter(forward.t[0], forward.t[1], forward.t[2], s=80, c='blue', label='goal
 ax.legend()
 plt.legend()
 plt.show(block=True)
+"""
