@@ -15,15 +15,18 @@ right_arm = rtb.DHRobot(
 
 N = 20000
 
-q1 = np.random.uniform(-np.pi/2, np.pi/2, N)
-q2 = np.random.uniform(-np.pi/4, 0, N)
-q3 = np.random.uniform(-np.pi/2, np.pi/2, N)
-q4 = np.random.uniform(-np.pi/2, np.pi/2, N)
-q5 = np.random.uniform(-np.pi/4, 0, N)
+angles_min_v = [0, -90, -90, 40, -90]
+angles_max_v = [-45, 90, 90, 90, 90]
+
+q1 = np.random.uniform(angles_min_v[0], angles_max_v[0], N)
+q2 = np.random.uniform(angles_min_v[1], angles_max_v[1], N)
+q3 = np.random.uniform(angles_min_v[2], angles_max_v[2], N)
+q4 = np.random.uniform(angles_min_v[3], angles_max_v[3], N)
+q5 = np.random.uniform(angles_min_v[4], angles_max_v[4], N)
 
 q_rand = np.column_stack((q1, q2, q3, q4, q5))
 
-T = right_arm.fkine(q_rand)
+T = right_arm.fkine(np.radians(q_rand))
 
 posicoes = T.t
 

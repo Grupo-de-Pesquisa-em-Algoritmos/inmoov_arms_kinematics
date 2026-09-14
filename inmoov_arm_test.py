@@ -4,10 +4,22 @@ import matplotlib.pyplot as plt
 import roboticstoolbox as rtb
 import numpy as np
 import spatialmath as sp
+import math as m 
 import random
 
-#env = rtb.backends.PyPlot.PyPlot()
-#env.launch()
+def translate_angle(min_v, max_v, min_r, max_r, angles_v):
+    trans_angles = []
+    for i, angle in enumerate(angles_v):
+        trans_angle = (((angle-min_v[i])*(max_r[i]-min_r[i]))/(max_v[i]-min_v[i])) + min_r[i]
+        #trans_angle = min_r[i] + ((angle - min_v[i])/(max_v[i]-min_v[i])) * (max_r[i] - min_r[i])
+        trans_angles.append(trans_angle)
+
+    return trans_angles
+
+
+
+env = rtb.backends.PyPlot.PyPlot()
+env.launch()
 
 # dh parameters presented in syed et al article (2024) ----> currently preferred
 left_arm_charmie = rtb.DHRobot(
@@ -52,24 +64,35 @@ test_angles = [0, -(np.pi)/4, -(np.pi)/2, 0.464, 0]
 
 b = left_arm_charmie.base.t
 
-#right_arm.base = sp.SE3(0, 0.4, 0)
-#env.add(right_arm)
-#env.add(left_arm_charmie)
+# definicao de angulos minimos e maximos para o ambiente virtual
+angles_min_v = [0, -90, -90, 35, -90]
+angles_max_v = [-45, 90, 90, 90, 90]
 
+
+# definicao de angulos minimos e maximos para o ambiente real
+angles_min_r = [85, 0, 0, 180, 0]
+angles_max_r = [30, 180, 180, 125, 180]
+
+angles_v = [85, 0, 0, 180, 0]
+
+ta = translate_angle(angles_min_r, angles_max_r, angles_min_v, angles_max_v, angles_v)
+print(ta)
 
 limites_v = [-0.2, 0.8, -0.2, 0.2, -0.2, 0.2]
-right_arm.plot(rest_angle, block=False, backend='pyplot', limits=limites_v)
+#right_arm.plot(np.radians(angles_min_v), block=False, backend='pyplot', limits=limites_v)
 ax = plt.gca()
 # frontal = [elev=0, azim=0]
 # superior = [elev=0, azim=-90]
 # lateral = [elev=90, azim=0]
 ax.view_init(elev=90, azim=0)
-plt.draw()
-plt.show(block=True)
+#plt.draw()
+#plt.show(block=True)
 
+right_arm.base = sp.SE3(0, 0.25, 0) * sp.SE3.Rx(np.pi/2)
+env.add(right_arm)
+#env.add(left_arm_charmie)
 
-"""
-qtr = rtb.jtraj(angles1, angles2r, 50)
+qtr = rtb.jtraj(np.radians(angles_min_v), np.radians(angles_max_v), 70)
 qtl = rtb.jtraj(angles1, angles2l, 50)
 
 for q_r, q_l in zip(qtr.q, qtl.q):
@@ -78,11 +101,11 @@ for q_r, q_l in zip(qtr.q, qtl.q):
     env.step()
 
 env.hold()
-"""
-forward = right_arm.fkine(test_angles)
-print(forward)
-forward = left_arm_charmie.fkine(test_angles)
-print(forward)
+
+#forward = right_arm.fkine(test_angles)
+#print(forward)
+#forward = left_arm_charmie.fkine(test_angles)
+#print(forward)
 #plt.show(block=True)
 """
 # generating a random angles vector between -90º and 90º for the five joints
