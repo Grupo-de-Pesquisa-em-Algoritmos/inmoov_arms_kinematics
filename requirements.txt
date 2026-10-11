@@ -6,3 +6,4 @@ spatialmath-python
 sympy
 pyqt5
 pymoo
+pandas

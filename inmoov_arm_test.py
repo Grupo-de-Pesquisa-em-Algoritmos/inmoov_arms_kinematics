@@ -58,12 +58,21 @@ b = left_arm_charmie.base.t
 
 
 limites_v = [-0.2, 0.8, -0.2, 0.2, -0.2, 0.2]
+plt.rcParams.update({
+    'font.size': 14,
+    'axes.titlesize': 16,
+    'axes.labelsize': 10,
+    'xtick.labelsize': 10,
+    'ytick.labelsize': 10,
+})
 right_arm.plot(rest_angle, block=False, backend='pyplot', limits=limites_v)
 ax = plt.gca()
-# frontal = [elev=0, azim=0]
-# superior = [elev=0, azim=-90]
-# lateral = [elev=90, azim=0]
-ax.view_init(elev=90, azim=0)
+# frontal = [elev=0, azim=90, roll=90]
+# superior = [elev=0, azim=180, roll=90]
+# lateral = [elev=90, azim=180, roll=180]
+#ax.view_init(elev=30, azim=-110, roll=-100)
+ax.view_init(elev=0, azim=90, roll=90)
+ax.set_box_aspect([1, 1, 1])
 plt.draw()
 plt.show(block=True)
 

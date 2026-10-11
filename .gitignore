@@ -1,3 +1,4 @@
 .venv/
 test.py
 inmoov_arm_test copy.py
+*.csv

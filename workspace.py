@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import roboticstoolbox as rtb
 
+
 right_arm = rtb.DHRobot(
     [
         rtb.RevoluteDH(alpha=-(np.pi)/2,  a=0.011783, d=0,             offset=0),
