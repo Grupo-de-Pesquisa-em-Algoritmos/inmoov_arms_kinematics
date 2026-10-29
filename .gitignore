@@ -2,3 +2,5 @@
 test.py
 inmoov_arm_test copy.py
 *.csv
+__pycache__/
+nfiles/__pycache__/

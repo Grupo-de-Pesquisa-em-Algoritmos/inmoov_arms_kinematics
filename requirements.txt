@@ -7,3 +7,6 @@ sympy
 pyqt5
 pymoo
 pandas
+plotly
+joblib
+scikit-learn
