@@ -6,7 +6,7 @@ To be able to run the codes in this repository, create your virtual environment 
 
 1. Create the virtual environment
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 ```
 
 2. Initialize the virtual environment
@@ -19,4 +19,4 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-The project of this repository is currently under development, some files may be unfinished.
+The project of this repository is currently under development, some files may be unfinished (*currently, most recent files are included in ''nfiles'' repository*).
